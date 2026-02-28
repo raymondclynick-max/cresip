@@ -32,7 +32,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function load() {
       const [resResult, clResult] = await Promise.all([
-        supabase.from('reservoirs').select('id,name,country,lat,lon,cap_m3,dist_coast_km,cluster_label').limit(2333),
+        supabase.from('reservoirs').select('id,name,country,lat,lon,cap_m3,dist_coast_km,cluster_label').limit(3000),
         supabase.from('clusters').select('*').order('rank')
       ])
       if (resResult.data) setReservoirs(resResult.data)
@@ -81,7 +81,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-6 text-xs text-white/30">
           <span>{reservoirs.length.toLocaleString()} RESERVOIRS</span>
           <span>{clusters.length} CLUSTERS</span>
-          <span className="text-cyan-400/70">LIVE · JRC GSW</span>
+          <span className="text-cyan-400/70">2015–2024 · JRC GSW</span>
         </div>
       </header>
 
@@ -212,7 +212,7 @@ export default function Dashboard() {
                     contentStyle={{background:'#0a0f1a',border:'1px solid #ffffff10',borderRadius:'2px',fontSize:'10px'}}
                     labelStyle={{color:'#ffffff60'}}
                     itemStyle={{color:'#10b981'}}
-                    formatter={(v:number) => [`$${v}M`, 'Revenue']}
+                    formatter={(v:number|undefined) => [`$${v??0}M`, 'Revenue' as const]}
                   />
                   <Bar dataKey="rev" radius={[2,2,0,0]}>
                     {clusters.slice(0,8).map((c,i) => (
