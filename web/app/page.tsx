@@ -31,11 +31,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function load() {
-      const [resResult, clResult] = await Promise.all([
-        supabase.from('reservoirs').select('id,name,country,lat,lon,cap_m3,dist_coast_km,cluster_label').limit(3000),
+      const [batch1, batch2, clResult] = await Promise.all([
+        supabase.from('reservoirs').select('id,name,country,lat,lon,cap_m3,dist_coast_km,cluster_label').range(0, 999),
+        supabase.from('reservoirs').select('id,name,country,lat,lon,cap_m3,dist_coast_km,cluster_label').range(1000, 2999),
         supabase.from('clusters').select('*').order('rank')
       ])
-      if (resResult.data) setReservoirs(resResult.data)
+      const allReservoirs = [...(batch1.data || []), ...(batch2.data || [])]
+      setReservoirs(allReservoirs)
       if (clResult.data) setClusters(clResult.data)
       setLoading(false)
       setTimeout(() => setGlobeReady(true), 300)
