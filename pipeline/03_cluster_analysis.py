@@ -24,10 +24,12 @@ from tqdm import tqdm
 warnings.filterwarnings("ignore")
 
 # ── Cost model constants ──────────────────────────────────────────────────────
-TRANSPORT_COST_PER_KM_PER_MM3 = 5000   # USD per km per million m³
-DEPOT_CAPEX_USD = 10_000_000            # USD fixed cost per depot
+# Transport: bulk water tanker blended rate ~$0.75/m³ per 1000km
+# = $0.75 per km per Mm³ (million cubic metres)
+TRANSPORT_COST_PER_KM_PER_MM3 = 0.75   # USD per km per million m³
+DEPOT_CAPEX_USD = 5_000_000             # USD fixed cost per depot
 PAYBACK_YEARS = 10                      # capex amortisation period
-MAX_VIABLE_PAYBACK = 20                 # years — above this: not viable
+MAX_VIABLE_PAYBACK = 25                 # years — above this: not viable
 MIN_CLUSTER_REVENUE = 500_000           # USD/yr minimum to consider
 
 # ── DBSCAN parameters ─────────────────────────────────────────────────────────
@@ -175,7 +177,7 @@ def compute_cluster_economics(cluster_df: pd.DataFrame,
         "transport_cost_usd": round(transport_cost, 0),
         "annual_capex_usd": round(annual_capex, 0),
         "net_annual_value_usd": round(net_annual_value, 0),
-        "payback_years": round(payback, 2) if payback != float("inf") else 999,
+        "payback_years": round(min(payback, 99.9), 1) if payback != float("inf") else 99.9,
         "mean_depot_distance_km": round(mean_dist_km, 2),
         "fill_correlation": corr,
         "viable": viable,

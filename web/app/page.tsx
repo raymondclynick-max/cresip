@@ -15,6 +15,13 @@ function fmt(n: number, decimals = 1) {
   return `$${n.toLocaleString()}`
 }
 
+function fmtPayback(years: number) {
+  if (years < 0.01) return '<4d'
+  if (years < 0.1) return Math.round(years * 365) + 'd'
+  if (years < 1) return Math.round(years * 12) + 'mo'
+  return years.toFixed(1) + 'yr'
+}
+
 function fmtVoid(m3: number) {
   if (m3 >= 1e9) return `${(m3/1e9).toFixed(2)} Bm³`
   if (m3 >= 1e6) return `${(m3/1e6).toFixed(1)} Mm³`
@@ -162,7 +169,7 @@ export default function Dashboard() {
               {[
                 ['Revenue', fmt(selectedCluster.annual_revenue_usd) + '/yr', 'text-cyan-400'],
                 ['Void Cap', fmtVoid(selectedCluster.annual_void_m3||0), 'text-white/70'],
-                ['Payback', `${selectedCluster.payback_years?.toFixed(1)}yr`, 'text-white/70'],
+                ['Payback', fmtPayback(selectedCluster.payback_years||0), 'text-white/70'],
                 ['Reservoirs', selectedCluster.n_reservoirs, 'text-white/70'],
                 ['Depot dist', `${selectedCluster.mean_depot_distance_km?.toFixed(0)}km`, 'text-white/70'],
                 ['Fill corr', `${((selectedCluster.fill_correlation||0)*100).toFixed(0)}%`, 'text-white/70'],
