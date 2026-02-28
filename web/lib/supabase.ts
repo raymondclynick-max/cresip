@@ -22,6 +22,7 @@ export type Cluster = {
   rank: number
   region: string
   n_reservoirs: number
+  reservoir_ids: string | null
   depot_lat: number
   depot_lon: number
   countries: string
